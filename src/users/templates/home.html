@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Google Sign In</title>
+</head>
+<body>
+    {% load socialaccount %}
+    <h2>Google Log In</h2>
+
+    <a href="{% provider_login_url 'google' %}?next=/admin">Log In with Google</a> 
+    {% if user.is_authenticated %}
+    <p>You are authenticated as <strong>{{user.email}}</p>
+    <a href="logout">Logout</a>
+    {% endif %}
+
+    {% if not user.is_authenticated %}
+    <p></p>
+        <a href="http://127.0.0.1:8000/admin">Do you want to use a username and password instead of Google authentication?</a>
+    {% endif %}
+</body>
+</html>

@@ -1,23 +1,44 @@
+{% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM Google Sign In</title>
+
+    <link rel="stylesheet" href="{% static 'users/style.css' %}">
 </head>
+
 <body>
-    {% load socialaccount %}
-    <h2>Google Log In</h2>
+    <div class="container">
+        <h2>Google Log In</h2>
 
-    <a href="{% provider_login_url 'google' %}?next=/admin">Log In with Google</a> 
-    {% if user.is_authenticated %}
-    <p>You are authenticated as <strong>{{user.email}}</p>
-    <a href="logout">Logout</a>
-    {% endif %}
+        {% if not user.is_authenticated %}
+        <!-- <a href="{% provider_login_url 'google' %}?next=/admin" class="button-link">Log In with Google</a> -->
+        <form method="post" action="{% url 'google_login' %}?next=/">
+            {% csrf_token %}
+            <button type="submit" class="button-link">Log In with Google</button>
+        </form>
+        {% endif %}
 
-    {% if not user.is_authenticated %}
-    <p></p>
-        <a href="http://127.0.0.1:8000/admin">Do you want to use a username and password instead of Google authentication?</a>
-    {% endif %}
+        {% if user.is_authenticated and user.email %}
+        <p>You are authenticated as <strong>{{ user.email }}</strong></p>
+        <a href="{% url 'account_logout' %}" class="button-link">Logout</a>
+        {% elif user.is_authenticated and user.username %}
+        <p>You are authenticated as <strong>{{ user.username }}</strong></p>
+        <a href="{% url 'account_logout' %}" class="button-link">Logout</a>
+        {% endif %}
+
+        {% if not user.is_authenticated %}
+        <!-- <a href="{% url 'account_login' %}" class="button-link">Use username/password instead?</a> -->
+        <form method="GET" action="{% url 'account_login' %}">
+            <button type="submit" class="button-link">Use username/password instead?</button>
+        </form>
+        {% endif %}
+    </div>
 </body>
+
 </html>

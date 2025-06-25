@@ -1,0 +1,42 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+{% block content %}
+    {% if process == "connect" %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        {% element p %}
+            {% blocktrans with provider.name as provider %}You are about to connect a new third-party account from {{ provider }}.{% endblocktrans %}
+        {% endelement %}
+    {% else %}
+        {% element h1 %}
+            {% if not user.is_authenticated %}
+            {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+            {% else %}
+            <!-- {% blocktrans with provider.name as provider %}Sign In With {{ provider }}{% endblocktrans %} -->
+            <!-- TODO: Above should be a logout text, saying that you are logged in and only option is to log out
+            or to be redirected to another page depending on your user role, think of adding another template that only has
+            condition to check if authenticated and based on that redirects to sign in out pages-->
+            {% endif %}
+        {% endelement %}
+        {% element p %}
+            {% blocktrans with provider.name as provider %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktrans %}
+        {% endelement %}
+    {% endif %}
+
+    <!-- TODO: Below the same: should be a logout text, saying that you are logged in and only option is to log out
+            or to be redirected to another page depending on your user role, check the todo above this part relies on that as well -->
+    {% element form method="post" no_visible_fields=True %}
+        {% slot actions %}
+            {% csrf_token %}
+            {% element button type="submit" class="button-link" %}
+                {% trans "Continue" %}
+            {% endelement %}
+        {% endslot %}
+    {% endelement %}
+
+{% endblock content %}

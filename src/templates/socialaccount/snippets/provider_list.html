@@ -11,8 +11,16 @@
                 {% endfor %}
             {% endif %}
             {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
-            {% element provider name=provider.name provider_id=provider.id href=href %}
-            {% endelement %}
+            <form action="{{ href }}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="provider" value="{{ provider.id }}">
+                    {{ provider.name }}
+                </button>
+            </form>
+
         {% endfor %}
     {% endelement %}
 {% endif %}
+
+
+<!-- http://127.0.0.1:8000/accounts/login/  just a marker for in project search of the template-->

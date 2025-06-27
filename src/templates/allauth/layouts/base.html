@@ -16,52 +16,19 @@
 </head>
 
 <body>
+    <header class="navbar">
+        <div class="navbar-left"></div>
+        <div class="navbar-right">
+            <a href="#" class="button-link">Join as Student</a>
+            <a href="#" class="button-link">Join as Teacher</a>
+        </div>
+    </header>
 
     {% block body %}
-    <!-- {% if messages %}
-                <div>
-                    <strong>{% trans "Messages:" %}</strong>
-                    <ul>
-                        {% for message in messages %}<li>{{ message }}</li>{% endfor %}
-                    </ul>
-                </div>
-            {% endif %} -->
     <div class="container">
         <strong>{% trans "Menu:" %}</strong>
         <ul style="list-style-type: none; padding: 0;">
             {% if user.is_authenticated %}
-
-            <!-- {% url 'account_email' as email_url_ %}
-                        {% if email_url_ %}
-                            <li>
-                                <a href="{{ email_url_ }}">{% trans "Change Email" %}</a>
-                            </li>
-                        {% endif %} -->
-            <!-- {% url 'account_change_password' as change_password_url_ %}
-                        {% if change_password_url_ %}
-                            <li>
-                                <a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a>
-                            </li>
-                        {% endif %} -->
-            <!-- {% url 'socialaccount_connections' as connections_url_ %}
-                        {% if connections_url_ %}
-                            <li>
-                                <a href="{{ connections_url_ }}">{% trans "Account Connections" %}</a>
-                            </li>
-                        {% endif %} -->
-            <!-- {% url 'mfa_index' as mfa_url_ %}
-                        {% if mfa_url_ %}
-                            <li>
-                                <a href="{{ mfa_url_ }}">{% trans "Two-Factor Authentication" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'usersessions_list' as usersessions_list_url_ %}
-                        {% if usersessions_list_url_ %}
-                            <li>
-                                <a href="{{ usersessions_list_url_ }}">{% trans "Sessions" %}</a>
-                            </li>
-                        {% endif %} -->
-
                         <!-- TODO: fix the problem of not working redirection of signup on the sign in page and vice versa -->
                 {% url 'account_logout' as logout_url_ %}
                 {% if logout_url_ %}
@@ -91,6 +58,11 @@
     {% endblock body %}
     {% block extra_body %}
     {% endblock extra_body %}
+
+    <footer class="footer">
+        <p>&copy; 2025 CRM Platform. All rights reserved.</p>
+        <p>Contact: support@crmplatform.example</p>
+    </footer>
 </body>
 
 </html>

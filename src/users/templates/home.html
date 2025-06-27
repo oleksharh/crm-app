@@ -7,47 +7,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Sign In Page</title>
-
+    <title>CRM Home</title>
     <link rel="stylesheet" href="{% static 'users/style.css' %}">
 </head>
 
 <body>
-    <div class="container">
-        <!-- <h2>Log In Page</h2>
+    <header class="navbar">
+        <div class="navbar-left">
+            <button class="button-link" onclick="document.getElementById('para1').scrollIntoView({ behavior: 'smooth' });">Overview</button>
+            <button class="button-link" onclick="document.getElementById('para2').scrollIntoView({ behavior: 'smooth' });">Features</button>
+            <button class="button-link" onclick="document.getElementById('para3').scrollIntoView({ behavior: 'smooth' });">Get Started</button>
+            
+        </div>
+        <div class="navbar-right">
+            <a href="#" class="button-link">Join as Student</a>
+            <a href="#" class="button-link">Join as Teacher</a>
+            <a href="{% provider_login_url 'google' %}" class="button-link sign-in-btn">Sign In</a>
+        </div>
+    </header>
 
-        {% if not user.is_authenticated %} -->
-        <!-- <a href="{% provider_login_url 'google' %}?next=/admin" class="button-link">Log In with Google</a> -->
-        <!-- <form method="post" action="{% url 'google_login' %}?next=/">
-            {% csrf_token %}
-            <button type="submit" class="button-link">Log In with Google</button>
-        </form>
-        {% endif %}
+    <main class="container">
+        <h1>Welcome to the CRM Platform</h1>
 
-        {% if user.is_authenticated and user.email %}
-        <p>You are authenticated as <strong>{{ user.email }}</strong></p>
-        <form method="post" action="{% url 'account_logout' %}" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="button-link">Logout</button>
-        </form>
-        {% elif user.is_authenticated and user.username %}
-        <p>You are authenticated as <strong>{{ user.username }}</strong></p>
-        <form method="post" action="{% url 'account_logout' %}" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="button-link">Logout</button>
-        </form>
-        {% endif %} -->
-<!-- 
-        {% if not user.is_authenticated %} -->
-        <!-- <a href="{% url 'account_login' %}" class="button-link">Use username/password instead?</a> -->
-        <!-- <form method="GET" action="{% url 'account_login' %}">
-            <button type="submit" class="button-link">Log In with Username</button>
-        </form>
-        {% endif %} -->
+        <section id="para1">
+            <h2>Overview</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
+        </section>
 
-        <h1>INDEX PAGE, NOTHING HERE</h1>
-        <h2><a href="{% provider_login_url 'google' %}?next=/">press here</a></h2>
-    </div>
+        <section id="para2">
+            <h2>Features</h2>
+            <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.</p>
+        </section>
+
+        <section id="para3">
+            <h2>Get Started</h2>
+            <p>Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 CRM Platform. All rights reserved.</p>
+        <p>Contact: support@crmplatform.example</p>
+        <p>{{ user.email }}{{ user.username }}</p>
+    </footer>
 </body>
 
 </html>

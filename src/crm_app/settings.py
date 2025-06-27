@@ -51,6 +51,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     
+    # # 2FA
+    # 'django_otp',
+    # 'django_otp.plugins.otp_totp',
+    # 'django_otp.plugins.otp_static',
+    # 'two_factor',
+    
         
     # Local apps
     'core',
@@ -82,6 +88,11 @@ MIDDLEWARE = [
     
     # Third-party middleware for allauth
     'allauth.account.middleware.AccountMiddleware',
+    
+    # Two-Factor Authentication Middleware
+    # 'django_otp.middleware.OTPMiddleware',
+    
+    # 'crm_app.middleware.Enforce2FAForAdminOnly',
 ]
 
 ROOT_URLCONF = 'crm_app.urls'
@@ -139,7 +150,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
+USE_TZ = True
 
 USE_I18N = True
 
@@ -183,3 +195,5 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# LOGIN_URL = '/admin/login/'

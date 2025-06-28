@@ -42,14 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Needed for allauth
 
 
     # Third-party apps
-    'django.contrib.sites',  # Needed for allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'rolepermissions',
     
     # # 2FA
     # 'django_otp',
@@ -60,7 +61,7 @@ INSTALLED_APPS = [
         
     # Local apps
     'core',
-    'users',
+    'users.apps.UsersConfig',  # Custom user app
     'scheduling',
     'attendance',
     'billing',
@@ -69,10 +70,10 @@ INSTALLED_APPS = [
 
 SOCIALACCOUNT_PROVIDERS = {
     "google":{
-        "scopes": {
+        "scopes": [
             "profile",
             "email"
-        },
+        ],
         "AUTH_PARAMS": {"access_type": "online"}
     }
 }
@@ -185,8 +186,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ACCOUNT_LOGIN_METHODS = {'username'}
 # NOTE: Unnecessary since we are using social authentication only
 
+
+
 SOCIALACCOUNT_ONLY = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_QUERY_EMAIL = True
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -197,3 +201,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # LOGIN_URL = '/admin/login/'
+
+
+# # RBAC handling
+ROLEPERMISSIONS_MODULE = 'users.roles'

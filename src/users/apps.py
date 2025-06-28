@@ -5,6 +5,9 @@ from django.conf import settings
 class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'users'
+    
+    def ready(self):
+        import users.signals
 
 
 # TODO: Research how to properly implement for the production environment

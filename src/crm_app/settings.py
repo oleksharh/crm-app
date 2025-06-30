@@ -197,7 +197,8 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-LOGIN_REDIRECT_URL = '/'
+# LOGIN_REDIRECT_URL = '/core'
+ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 LOGOUT_REDIRECT_URL = '/'
 
 # LOGIN_URL = '/admin/login/'

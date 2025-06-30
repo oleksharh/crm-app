@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("", include("users.urls")),
+    path("dashboard/", include("dashboard.urls")),
     # path('', include(tf_urls)),  # Two-Factor URLs
 ]

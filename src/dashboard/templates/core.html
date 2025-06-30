@@ -1,0 +1,59 @@
+{% load static %}
+{% load socialaccount %}
+{% load allauth i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core</title>
+    <link rel="stylesheet" href="{% static 'users/style.css' %}">
+    <link rel="stylesheet" href="{% static 'login_overlay.css' %}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left"></div>
+        <div class="navbar-right">
+            {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'account_logout' %}" style="display:inline;" id="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="button-link">
+                    {% trans 'Sign Out' %}
+                </button>
+            </form>
+            <script>
+                document.getElementById('logout-form').addEventListener('submit', function(e) {
+                    // After logout, force a hard reload without cache
+                    setTimeout(function() {
+                        window.location.reload(true);
+                    }, 500);
+                });
+            </script>
+            {% else %}
+            <div id="login-overlay">
+                <div class="overlay-content">
+                    <h2>Please log in</h2>
+                    <p>Your session has expired or you are not logged in.</p>
+                    <a href="{% provider_login_url 'google' %}" class="button-link sign-in-btn">Log In</a>
+                </div>
+            </div>
+            <script>
+                // Prevent interaction with the page behind the overlay
+                document.body.style.overflow = 'hidden';
+            </script>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="container">
+        {% block container %}{% endblock %}
+    </main>
+    
+
+    <footer class="footer">
+        <p>&copy; 2025 CRM Platform. All rights reserved.</p>
+        <p>Contact: support@crmplatform.example</p>
+        <p>{{ user.email }}{{ user.username }}</p>
+    </footer>
+</body>
+</html>

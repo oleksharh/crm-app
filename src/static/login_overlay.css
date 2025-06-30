@@ -1,0 +1,51 @@
+#login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-overlay .overlay-content {
+    background: #000000;
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    min-width: 320px;
+}
+
+#login-overlay h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+#login-overlay p {
+    margin-bottom: 2rem;
+}
+
+.button-link.sign-in-btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: #00c3ff;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+.button-link.sign-in-btn:hover,
+.button-link.sign-in-btn:focus {
+    background: #f8d7da;
+    color: #5a1f1f;
+}

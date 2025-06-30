@@ -8,3 +8,9 @@ def home(request):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+
+
+
+def core(request):
+    return render(request, "core.html")

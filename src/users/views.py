@@ -13,4 +13,4 @@ def logout_view(request):
 
 
 def core(request):
-    return render(request, "core.html")
+    return render(request, "core/core.html")

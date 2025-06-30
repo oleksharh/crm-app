@@ -1,5 +1,6 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
+from django.shortcuts import redirect
 from rolepermissions.checkers import has_role
 
 class CustomAccountAdapter(DefaultAccountAdapter):
@@ -35,4 +36,4 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         if 'dashboard' in current_url:
             return current_url
         
-        return reverse('')
+        return reverse('home')

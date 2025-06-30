@@ -22,7 +22,7 @@
         <div class="navbar-right">
             <a href="#" class="button-link">Join as Student</a>
             <a href="#" class="button-link">Join as Teacher</a>
-            <a href="{% provider_login_url 'google' %}" class="button-link sign-in-btn">Sign In</a>
+            <a href="{% provider_login_url 'google' process='login' scope='openid email profile https://www.googleapis.com/auth/calendar' %}" class="button-link sign-in-btn">Sign In</a>
         </div>
     </header>
 

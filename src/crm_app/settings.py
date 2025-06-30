@@ -66,15 +66,21 @@ INSTALLED_APPS = [
     'attendance',
     'billing',
     'dashboard',
+    "calendar_integration",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
     "google":{
         "scopes": [
             "profile",
-            "email"
+            "email",
+            'openid',
+            'https://www.googleapis.com/auth/calendar',
         ],
-        "AUTH_PARAMS": {"access_type": "online"}
+        'AUTH_PARAMS': {
+            'access_type': 'offline',  # needed to get refresh token
+            'prompt': 'consent',       # force re-consent to get new scopes
+        },
     }
 }
 
@@ -206,3 +212,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 # # RBAC handling
 ROLEPERMISSIONS_MODULE = 'users.roles'
+
+SOCIALACCOUNT_STORE_TOKENS = True

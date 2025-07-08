@@ -2,6 +2,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
 from django.shortcuts import redirect
 from rolepermissions.checkers import has_role
+from rolepermissions.roles import get_user_roles
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
@@ -10,6 +11,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         """
 
         user = request.user
+        roles = get_user_roles(user)
         if user.is_authenticated:
             if has_role(user, 'student'):
                 return reverse('student_dashboard')  # Redirect to student dashboard
@@ -18,9 +20,16 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             elif has_role(user, 'principal'):
                 return reverse('principal_dashboard')  # Redirect to principal dashboard
             else:
-                return reverse('/')  # Default redirect for unrecognized roles
+                return reverse('list-events')  # Default redirect for unrecognized roles
             
         return super().get_login_redirect_url(request)
+    
+    def get_signup_redirect_url(self, request):
+        login_redirect = self.get_login_redirect_url(request)
+        if login_redirect == super().get_login_redirect_url(request):
+            return super().get_signup_redirect_url(request)
+        
+        return login_redirect
     
     def get_logout_redirect_url(self, request):
         """
@@ -30,7 +39,6 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         previous_url = request.META.get('HTTP_REFERER', '')
         current_url = request.path
 
-        # Prefer previous_url if it contains 'dashboard', else check current_url
         if 'dashboard' in previous_url:
             return previous_url
         if 'dashboard' in current_url:

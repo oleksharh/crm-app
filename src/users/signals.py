@@ -13,6 +13,7 @@ def assign_role_after_google_signup(request, user, **kwargs):
         
     elif ApprovedTeacher.objects.filter(email=email).exists():
         assign_role(user, 'teacher')
+        
     else:
         user.is_active = False
         user.save()

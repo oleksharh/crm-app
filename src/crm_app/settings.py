@@ -67,6 +67,13 @@ INSTALLED_APPS = [
     'billing',
     'dashboard',
     "calendar_integration",
+    "services",
+    "groups",
+    "lessons",
+    
+    
+    # Useful development tools
+    "django_extensions",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -203,7 +210,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-# LOGIN_REDIRECT_URL = '/core'
+# LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 LOGOUT_REDIRECT_URL = '/'
 

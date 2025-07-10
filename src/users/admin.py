@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import ApprovedTeacher, ApprovedStudent
+from .models import ApprovedUser
 
-admin.site.register(ApprovedTeacher)
-admin.site.register(ApprovedStudent)
+admin.site.register(ApprovedUser)

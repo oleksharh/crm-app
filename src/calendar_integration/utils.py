@@ -1,27 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
-from allauth.socialaccount.models import SocialAccount,SocialToken, SocialApp
+from allauth.socialaccount.models import SocialAccount, SocialToken, SocialApp
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 
-
-
-def time_available(self,request,d1,d2):
-    pass
-
-#Connect to Google Calendar
-def connect_to_calendar(request):
-    #Fetches the User of the request
-    qs=SocialAccount.objects.filter(user=request.user)
-    print(request.user)
-    #Fetches the Acces token of the User
-    token=SocialToken.objects.filter(account=qs[0])
+def connect_to_calendar(token):
     app = SocialApp.objects.get(provider='google')
 
-    token = token[0]
-    #Finally making a connection request
+    # Finally making a connection request
     creds = Credentials(
         token=token.token,
         refresh_token=token.token_secret,
@@ -31,27 +20,60 @@ def connect_to_calendar(request):
         scopes=[
             "https://www.googleapis.com/auth/calendar"
         ],
-        )
+    )
     service = build('calendar', 'v3', credentials=creds)
     return service
 
 
+def fetch_user_calendar_events(token, time_min, time_max):
+    """Fetches events from the user's calendar using the provided access token."""
+    service = connect_to_calendar(token)
+
+    events_result = service.events().list(
+        calendarId='primary',
+        timeMin=time_min,
+        timeMax=time_max,
+        singleEvents=True,
+        orderBy='startTime'
+    ).execute()
+
+    return events_result.get('items', [])
 
 
-#This function accept comma separated string of email like "moinkhan8439@gmail.com , shahfahadkhan3@gmail.com " 
+def connect_to_calendar_for_user(request):
+    # Fetches the User of the request
+    qs = SocialAccount.objects.filter(user=request.user)
+    print(qs)
+    # Fetches the Access token of the User
+    token = SocialToken.objects.filter(account=qs[0])
+    app = SocialApp.objects.get(provider='google')
+
+    token = token[0]
+    # Finally making a connection request
+    creds = Credentials(
+        token=token.token,
+        refresh_token=token.token_secret,
+        token_uri="https://oauth2.googleapis.com/token",
+        client_id=app.client_id,
+        client_secret=app.secret,
+        scopes=[
+            "https://www.googleapis.com/auth/calendar"
+        ],
+    )
+    service = build('calendar', 'v3', credentials=creds)
+    return service
+
+# This function accept comma separated string of email like "moinkhan8439@gmail.com , shahfahadkhan3@gmail.com "
 # and returns a list of dictionary in the format : [ {'email' : 'moinkhan8439@gmail.com'} , {'email' : 'shahfahadkhan3@gmail.com' }]
 def convert_attendees_to_list(attendees):
-        res=list()
-        for i in attendees.split(','):
-            d=dict()
-            d['email']=i.strip()
-            res.append(d)
-        return res
+    res = list()
+    for i in attendees.split(','):
+        d = dict()
+        d['email'] = i.strip()
+        res.append(d)
+    return res
 
 
-
-
-    
 '''    
 #This function is to be used if we use quickadd to add events 
 def convert_date(date1,date2):
@@ -63,21 +85,15 @@ def convert_date(date1,date2):
 '''
 
 
-
-
-
-#This function convert date into 2021-03-22T00:40:00+05:30
+# This function convert date into 2021-03-22T00:40:00+05:30
 def convert_RFC(date):
     return str(date.isoformat('T'))
-    
-
-
 
 
 def prepare_event(data):
-    start=convert_RFC(data["start_time"])
-    end=convert_RFC(data["end_time"])
-    email=convert_attendees_to_list(data['attendees'])
+    start = convert_RFC(data["start_time"])
+    end = convert_RFC(data["end_time"])
+    email = convert_attendees_to_list(data['attendees'])
     event = {
         'summary': data["summary"],
         'description': data["description"],
@@ -93,8 +109,8 @@ def prepare_event(data):
         'reminders': {
             'useDefault': False,
             'overrides': [
-            {'method': 'email', 'minutes': 24 * 60},
-            {'method': 'popup', 'minutes': 10},
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10},
             ],
         }
     }

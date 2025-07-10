@@ -58,6 +58,10 @@ class TeacherServiceRate(models.Model):
                 'teacher_share': f"Teacher share cannot exceed base price ({self.service_type.base_price})."
             })
 
+
+    # TODO: If someone manually sets teacher_share, then .save()
+    # will still recompute based on percentage (even if it’s no longer intended).
+    # This overwrites user input silently.
     def calculate_payouts(self):
         if self.percentage is not None:
             self.teacher_share = (self.service_type.base_price * self.percentage) / 100

@@ -38,6 +38,9 @@ class BillingRecord(models.Model):
         if not member_exists:
             raise ValidationError(f"{self.student_email} is not in the group '{group.name}'.")
 
+
+    # TODO: CHANGE THIS To a seperate form/service not to get null problems
+    # NOTE: THIS IS BAD Practice
     def save(self, *args, **kwargs):
         # Always get current price from the lesson's service type
         if not self.amount:

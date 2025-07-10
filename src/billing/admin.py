@@ -1,4 +1,5 @@
 from django.contrib import admin
-from .models import BillingRecord
+from .models import GroupBillingRecord, StudentPaymentStatus
 
-admin.site.register(BillingRecord)
+admin.site.register(GroupBillingRecord)
+admin.site.register(StudentPaymentStatus)

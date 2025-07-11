@@ -84,14 +84,16 @@ _*Make sure to be in src directory when running this_
 
 5. Don't forget to add test users in Google Cloud Console to be able to test the application with your accounts.
 
-## Setting up the School
+## Setting up the School (Data Population)
 1. Manually add email address of a principal in the database in the admin panel in the Approved User model.
 2. Principal will subsequently be able to add teachers and students.
 3. Students do not need to be manually approved. When a student group is created, their emails are automatically
 whitelisted (this is partially implemented). Alternatively, students can sign up themselves.
 You can assign roles to them manually through the Django shell. A user-facing interface for
 role assignment will be added later.
-4. Any questions or issues, please create an issue in the repository.
+4. Any questions or issues, please create an issue in the repository.<br>
+![ER Diagram](static/project_models.png)
+
 
 ## Contributing
 If you want to contribute to the project, please follow these steps:

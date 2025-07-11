@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from .utils import connect_to_calendar, connect_to_calendar_for_user
+from .services.google_service import connect_to_calendar, connect_to_calendar_for_user
 from datetime import datetime, timedelta, timezone
-from .serialize_event import list_events_data
+from .services.event_fetcher import list_events_data
 
 @login_required
 def list_events(request):

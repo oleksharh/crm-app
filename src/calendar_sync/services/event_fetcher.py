@@ -1,4 +1,4 @@
-from .utils import fetch_user_calendar_events
+from .google_service import fetch_user_calendar_events
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from datetime import datetime, timedelta
 

@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'attendance',
     'billing',
     'dashboard',
-    "calendar_integration",
+    "calendar_sync",
     "services",
     "groups",
     "lessons",

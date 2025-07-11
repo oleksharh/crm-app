@@ -22,6 +22,6 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("", include("users.urls")),
     path("dashboard/", include("dashboard.urls")),
-    path("api/", include("calendar_integration.urls")),
+    path("api/", include("calendar_sync.urls")),
     # path('', include(tf_urls)),  # Two-Factor URLs
 ]

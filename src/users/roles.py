@@ -2,7 +2,8 @@ from rolepermissions.roles import AbstractUserRole
 
 class Student(AbstractUserRole):
     available_permissions = {
-        'view_schedule': True, # Students can view their own schedule, not really necessary as they have that in google calendar anyway, but let's keep it for consistency
+        'view_schedule': True, # Students can view their own schedule, not really necessary as they have that in google
+        # calendar anyway, but let's keep it for consistency
         'view_attendance': True, # Shows their own attendance records coupled with billing
         'view_billing': True, # Students can view their own billing records
     }

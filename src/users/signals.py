@@ -6,6 +6,10 @@ from .models import ApprovedUser
 
 @receiver(user_signed_up)
 def assign_role_after_google_signup(request, user, **kwargs):
+    # Assigning roles only to users who signed up via Google
+    if 'sociallogin' not in kwargs:
+        return
+
     email = user.email.lower()
 
     approved_user_roles = ApprovedUser.objects.filter(email=email)

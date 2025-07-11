@@ -1,8 +1,13 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
-from django.shortcuts import redirect
 from rolepermissions.checkers import has_role
 from rolepermissions.roles import get_user_roles
+
+# TODO: This adapter needs to be adapted, key points are:
+# 1. Redirect users to their respective dashboards based on their role.
+# 2. For multiple roles, prioritize principal > teacher > student.
+# 3. If no recognized role, redirect to the home page or unrecognized user page, where they can send a
+# request to be approved and given a role.
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):

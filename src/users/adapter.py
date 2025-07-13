@@ -1,13 +1,7 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
 from rolepermissions.checkers import has_role
-from rolepermissions.roles import get_user_roles
 
-# TODO: This adapter needs to be adapted, key points are:
-# 1. Redirect users to their respective dashboards based on their role.
-# 2. For multiple roles, prioritize principal > teacher > student.
-# 3. If no recognized role, redirect to the home page or unrecognized user page, where they can send a
-# request to be approved and given a role.
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
@@ -16,16 +10,15 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         """
 
         user = request.user
-        roles = get_user_roles(user)
         if user.is_authenticated:
-            if has_role(user, 'student'):
-                return reverse('student_dashboard')  # Redirect to student dashboard
+            if has_role(user, 'principal'):
+                return reverse('principal_dashboard')
             elif has_role(user, 'teacher'):
-                return reverse('teacher_dashboard')  # Redirect to teacher dashboard
-            elif has_role(user, 'principal'):
-                return reverse('principal_dashboard')  # Redirect to principal dashboard
+                return reverse('teacher_dashboard')
+            elif has_role(user, 'student'):
+                return reverse('student_dashboard')
             else:
-                return reverse('list-events')  # Default redirect for unrecognized roles
+                return reverse('home')
             
         return super().get_login_redirect_url(request)
     

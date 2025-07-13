@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import json
+
 from allauth.socialaccount.models import SocialAccount, SocialToken, SocialApp
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
@@ -7,10 +8,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
 
-def connect_to_calendar(token):
-    app = SocialApp.objects.get(provider='google')
-
-    # Finally making a connection request
+def _connect_to_calendar(token: SocialToken, app: SocialApp):
+    """
+    Internal helper to create a Google Calendar API service using a SocialToken and SocialApp.
+    """
     creds = Credentials(
         token=token.token,
         refresh_token=token.token_secret,
@@ -21,13 +22,42 @@ def connect_to_calendar(token):
             "https://www.googleapis.com/auth/calendar"
         ],
     )
-    service = build('calendar', 'v3', credentials=creds)
-    return service
+    return build('calendar', 'v3', credentials=creds)
 
 
-def fetch_user_calendar_events(token, time_min, time_max):
+def connect_to_calendar_for_user(request, user: User = None):
+    """
+    Connects to Google Calendar for the authenticated user in the request.
+    """
+    if user is None:
+        user = request.user
+
+    try:
+        app = SocialApp.objects.get(provider='google')
+    except SocialApp.DoesNotExist:
+        raise ValueError("Google SocialApp not found. Please configure it in the admin panel.")
+
+    qs = SocialAccount.objects.filter(user=user)
+    if not qs.exists():
+        raise ValueError("No social account found for user.")
+    token_qs = SocialToken.objects.filter(account=qs[0])
+    if not token_qs.exists():
+        raise ValueError("No social token found for user.")
+
+    return _connect_to_calendar(token_qs[0], app)
+
+
+def connect_to_calendar_by_token(token: SocialToken):
+    try:
+        app = SocialApp.objects.get(provider='google')
+    except SocialApp.DoesNotExist:
+        raise ValueError("Google SocialApp not found. Please configure it in the admin panel.")
+    return _connect_to_calendar(token, app)
+
+
+def fetch_user_calendar_events_by_token(token, time_min, time_max) -> list[dict]:
     """Fetches events from the user's calendar using the provided access token."""
-    service = connect_to_calendar(token)
+    service = connect_to_calendar_by_token(token)
 
     events_result = service.events().list(
         calendarId='primary',
@@ -40,28 +70,8 @@ def fetch_user_calendar_events(token, time_min, time_max):
     return events_result.get('items', [])
 
 
-def connect_to_calendar_for_user(request):
-    # Fetches the User of the request
-    qs = SocialAccount.objects.filter(user=request.user)
-    print(qs)
-    # Fetches the Access token of the User
-    token = SocialToken.objects.filter(account=qs[0])
-    app = SocialApp.objects.get(provider='google')
+# NOTE: Everything below this line is not used in the current implementation but might be useful in the future.
 
-    token = token[0]
-    # Finally making a connection request
-    creds = Credentials(
-        token=token.token,
-        refresh_token=token.token_secret,
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=app.client_id,
-        client_secret=app.secret,
-        scopes=[
-            "https://www.googleapis.com/auth/calendar"
-        ],
-    )
-    service = build('calendar', 'v3', credentials=creds)
-    return service
 
 # This function accept comma separated string of email like "moinkhan8439@gmail.com , shahfahadkhan3@gmail.com "
 # and returns a list of dictionary in the format : [ {'email' : 'moinkhan8439@gmail.com'} , {'email' : 'shahfahadkhan3@gmail.com' }]

@@ -9,7 +9,7 @@ class StudentGroup(models.Model):  # Works as general Lesson Group
     teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        limit_choices_to={"groups__name__in": ["teacher", "principal"]},
+        limit_choices_to={'groups__name__in': ['teacher', 'principal']},
     )
     service_type = models.ForeignKey(ServiceType, on_delete=models.PROTECT)
     created_at = models.DateField()
@@ -17,11 +17,11 @@ class StudentGroup(models.Model):  # Works as general Lesson Group
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("name", "teacher")
+        unique_together = ('name', 'teacher')
 
     def clean(self):
         super().clean()
-        # TODO: Add validation of the teachr and name checked agains google calendar
+        # TODO: Add validation of the teacher and name checked against google calendar
         # params, that are: creator.email = teacher.email, summary = name
 
     def __str__(self):
@@ -30,7 +30,7 @@ class StudentGroup(models.Model):  # Works as general Lesson Group
 
 class GroupMember(models.Model):
     group = models.ForeignKey(
-        StudentGroup, on_delete=models.CASCADE, related_name="members"
+        StudentGroup, on_delete=models.CASCADE, related_name='members'
     )
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, null=True)
     joined_date = models.DateField(auto_now_add=True)

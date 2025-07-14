@@ -1,20 +1,30 @@
+import json
+from django.contrib.auth.decorators import login_required
+from rolepermissions.decorators import has_role_decorator
 from .google_service import fetch_user_calendar_events_by_token
-from .utils import get_tokens_by_role, get_today_time_range_iso
+from .utils import get_today_time_range_iso, get_token_for_user, get_parsed_event_object, create_or_update_lesson
 
 
-def list_events_data():
-    tokens = get_tokens_by_role(['teacher', 'principal'])  # TODO: make it dynamic (user can choose roles, but that's
-    # the project is done and needs polishing)
+@login_required
+@has_role_decorator(["teacher", "principal"])  # inside it uses has_role(user, roles: list[str])
+def fetch_events_for_day(request) -> dict:
+    user = request.user
+    token = get_token_for_user(user)
 
-    for token in tokens:
-        min_time, max_time = get_today_time_range_iso()
-        user_events = fetch_user_calendar_events_by_token(token, min_time, max_time)
-        for event in user_events:
-            print(event)
-            lesson_name = event['summary']
-            teacher_email = event['creator']['email']
-            # self checks if the user is the teacher if yes then it is not included in the attendees
-            attendee_emails = [attendee['email'] for attendee in event['attendees'] if not attendee.get('self', False)]
-            # attendees': [{'email': 'alice.hughes18 @ samplemail.com', 'responseStatus': 'needsAction'}, {'email
-            # ': 'testcrm2001.01 @ gmail.com', 'organizer': True, 'self': True, 'responseStatus': 'accepted'},
-            print(lesson_name, teacher_email, attendee_emails)
+    if not token:
+        return {"error": "No calendar token found for the user."}
+
+    min_time, max_time = get_today_time_range_iso()
+
+    user_events = fetch_user_calendar_events_by_token(token, min_time, max_time)
+
+    if not user_events:
+        return {"error": "No events found for the user."}
+
+    events_data_status = []
+    for event in user_events:
+        parsed_event = get_parsed_event_object(event)
+        event_added = create_or_update_lesson(parsed_event)
+        events_data_status.append(event_added)
+
+    return {"events": events_data_status}

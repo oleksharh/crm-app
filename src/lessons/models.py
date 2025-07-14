@@ -1,16 +1,14 @@
 from django.db import models
-from django.utils import timezone
-from datetime import datetime
+from pytz import timezone as tzlib
 from groups.models import StudentGroup
 from services.models import ServiceType
 
 
 class Lesson(models.Model):
-    group = models.ForeignKey(StudentGroup, on_delete=models.CASCADE)
-    date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    duration_minutes = models.PositiveIntegerField(editable=False)
+    group = models.ForeignKey(StudentGroup, on_delete=models.CASCADE, null=False, blank=False)
+    start_utc = models.DateTimeField()
+    duration = models.DurationField()
+    timezone = models.CharField(max_length=64)  # Just for reference and future lookups, start already has timezone info
     status = models.CharField(
         max_length=20,
         choices=[
@@ -23,18 +21,34 @@ class Lesson(models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ("group", "date")
+        unique_together = ("group", "start_utc")
+        indexes = [
+            models.Index(fields=["start_utc"]),
+        ]
 
     def __str__(self):
-        return f"Lesson for {self.group.name} on {self.date}"
+        return f"Lesson for {self.group.name} on UTC: {self.utc_date} on local: {self.local_date}"
+
 
     @property
     def teacher(self):
         return self.group.teacher
 
-    def save(self, *args, **kwargs):
-        if self.start_time and self.end_time:
-            start_dt = datetime.combine(self.date, self.start_time)
-            end_dt = datetime.combine(self.date, self.end_time)
-            self.duration_minutes = int((end_dt - start_dt).total_seconds() // 60)
-        super().save(*args, **kwargs)
+    @property
+    def name(self):
+        return self.group.name
+
+    @property
+    def utc_date(self):
+        return self.start_utc.date()
+
+    @property
+    def local_date(self):
+        if self.timezone == "Unknown":
+            return "Unknown"
+        return self.start_utc.astimezone(tzlib(self.timezone)).date()
+
+    @property
+    def end(self):
+        return self.start_utc + self.duration
+

@@ -1,11 +1,6 @@
-import json
-from traceback import print_tb
-
-from django.contrib.auth.decorators import login_required
-from rolepermissions.decorators import has_role_decorator
-
-from calendar_sync.services.google_service import fetch_user_calendar_events_by_token
-from calendar_sync.services.utils import get_tokens_by_role, get_today_time_range_iso
+from legacy.calendar_api import fetch_user_calendar_events_by_token
+from calendar_sync.google.tokens import get_tokens_by_role
+from calendar_sync.time.ranges import get_today_time_range_tz_aware_iso
 
 
 def list_events_data() -> dict:
@@ -13,7 +8,7 @@ def list_events_data() -> dict:
     # the project is done and needs polishing)
 
     for token in tokens:
-        min_time, max_time = get_today_time_range_iso()
+        min_time, max_time = get_today_time_range_tz_aware_iso(tz="UTC")
         user_events = fetch_user_calendar_events_by_token(token, min_time, max_time)
         print(user_events)
         if not user_events:

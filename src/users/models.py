@@ -37,3 +37,14 @@ class StudentProfile(models.Model):
             return f"{self.email} - No Name"
 
 
+class UserProfileTZ(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tz_profile')
+    timezone = models.CharField(max_length=64, default='UTC')
+
+    def __str__(self):
+        return f"{self.user.email} - {self.timezone}"
+
+    class Meta:
+        verbose_name = "User Timezone"
+        verbose_name_plural = "User Timezones"
+

@@ -1,6 +1,6 @@
 from traceback import print_tb
 
-from allauth.account.signals import user_signed_up
+from allauth.account.signals import user_signed_up, user_logged_in
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rolepermissions.roles import assign_role
@@ -49,3 +49,27 @@ def create_or_update_student_profile_for_user(sender, instance, created, **kwarg
 @receiver(post_save, sender=ApprovedUser)
 def create_or_update_student_profile_for_approved_user(sender, instance, created, **kwargs):
     StudentProfile.objects.get_or_create(email=instance.email)
+
+
+
+from .models import UserProfileTZ
+from calendar_sync.time.conversions import get_user_timezone_from_google
+from calendar_sync.google.tokens import get_token_for_user
+
+@receiver(user_logged_in)
+def set_user_timezone_after_login(request, user, **kwargs):
+    """
+    Set the user's timezone after they log in.
+    This assumes you have a function to fetch the timezone from Google Calendar.
+    """
+    if not user.socialaccount_set.filter(provider='google').exists():
+        raise "User does not have a Google social account associated."
+
+    try:
+        token = get_token_for_user(user)
+
+
+        timezone = get_user_timezone_from_google(token.token)
+        UserProfileTZ.objects.update_or_create(user=user, defaults={'timezone': timezone})
+    except Exception as e:
+        raise f"Failed to set timezone for user {user.email}: {str(e)}"
